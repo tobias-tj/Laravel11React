@@ -110,23 +110,19 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        // // Log::info('Request data:', $request->all());
-        // dd($request);
-        // // Log::info('Request file:', $request->file('image'));
-
-        $data = $request -> validated();
-            $image = $data['image'] ?? null;
-            $data['updated_by'] = Auth::id();
-            if($image){
-                if($project->image_path){
-                    Storage::disk('public')->delete($project->image_path);
-                }
-                $data['image_path'] = $image->store('project/' .Str::random(), 'public');
+        $data = $request->validated();
+        $image = $data['image'] ?? null;
+        $data['updated_by'] = Auth::id();
+        if ($image) {
+            if ($project->image_path) {
+                Storage::disk('public')->deleteDirectory(dirname($project->image_path));
             }
-            $project->update($data);
+            $data['image_path'] = $image->store('project/' . Str::random(), 'public');
+        }
+        $project->update($data);
 
-            return to_route('project.index')
-                ->with('success', "Project was updated");
+        return to_route('project.index')
+            ->with('success', "Project \"$project->name\" was updated");
     }
 
     /**

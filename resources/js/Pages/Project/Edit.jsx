@@ -6,25 +6,20 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Edit({ auth, project }) {
-  const { data, setData, put, errors, reset } = useForm({
+export default function Create({ auth, project }) {
+  const { data, setData, post, errors, reset } = useForm({
     image: "",
     name: project.name || "",
     status: project.status || "",
     description: project.description || "",
     due_date: project.due_date || "",
+    _method: "PUT",
   });
-
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    console.log("Submitting data:", data); // Añade este log para ver los datos
-
-
-    put(route("project.update", project.id));
-
-
+    post(route("project.update", project.id));
   };
 
   return (
@@ -33,12 +28,13 @@ export default function Edit({ auth, project }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Project "{project.name}"
+            Edit project "{project.name}"
           </h2>
-          <Head title="Projects" />
         </div>
       }
     >
+      <Head title="Projects" />
+
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -47,10 +43,10 @@ export default function Edit({ auth, project }) {
               className="p-4 sm:p-8 bg-white shadow sm:rounded-lg"
             >
               {project.image_path && (
-              <div>
-                <img src={project.image_path} alt="Project Image" className="w-64" />
-              </div>)}
-
+                <div className="mb-4">
+                  <img src={project.image_path} className="w-64" />
+                </div>
+              )}
               <div>
                 <InputLabel
                   htmlFor="project_image_path"
@@ -67,6 +63,7 @@ export default function Edit({ auth, project }) {
               </div>
               <div className="mt-4">
                 <InputLabel htmlFor="project_name" value="Project Name" />
+
                 <TextInput
                   id="project_name"
                   type="text"
@@ -76,6 +73,7 @@ export default function Edit({ auth, project }) {
                   isFocused={true}
                   onChange={(e) => setData("name", e.target.value)}
                 />
+
                 <InputError message={errors.name} className="mt-2" />
               </div>
               <div className="mt-4">
@@ -83,6 +81,7 @@ export default function Edit({ auth, project }) {
                   htmlFor="project_description"
                   value="Project Description"
                 />
+
                 <TextAreaInput
                   id="project_description"
                   name="description"
@@ -117,7 +116,6 @@ export default function Edit({ auth, project }) {
                   name="status"
                   id="project_status"
                   className="mt-1 block w-full"
-                  value={data.status}
                   onChange={(e) => setData("status", e.target.value)}
                 >
                   <option value="">Select Status</option>
@@ -126,14 +124,15 @@ export default function Edit({ auth, project }) {
                   <option value="completed">Completed</option>
                 </SelectInput>
 
-                <InputError message={errors.status} className="mt-2" />
+                <InputError message={errors.project_status} className="mt-2" />
               </div>
               <div className="mt-4 text-right">
                 <Link
                   href={route("project.index")}
-                  className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2">
-                    Cancel
-                  </Link>
+                  className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
+                >
+                  Cancel
+                </Link>
                 <button className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
                   Submit
                 </button>
