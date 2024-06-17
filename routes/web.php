@@ -10,12 +10,15 @@ use Inertia\Inertia;
 
 Route::redirect('/', '/dashboard');
 
-Route::middleware(['auth', 'verified'])-> group(function (){
-    Route::get('/dashboard', fn() => Inertia:: render('Dashboard'))
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))
         ->name('dashboard');
 
     Route::resource('project', ProjectController::class);
     Route::resource('task', TaskController::class);
+    Route::get('/tasks/my-tasks', [TaskController::class, 'myTasks'])->name(
+        'task.myTasks'
+    );
     Route::resource('user', UserController::class);
 });
 
@@ -25,4 +28,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
